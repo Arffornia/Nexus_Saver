@@ -25,7 +25,7 @@ You can easily save a variable like this :
 saver.save("key", "value");
 ```
 
-Nb: if you set a variable that already exists, it will simply overwrite it.
+Nb: If you set a variable that already exists, it will simply overwrite it.
 
 #### Load a variable :
 You can easily load a variable like this :
