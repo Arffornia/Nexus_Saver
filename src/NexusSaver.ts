@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export class NexusMods {
+export class NexusSaver {
     private savingFilePath: string;
     private fileName: string;
 
@@ -14,6 +14,14 @@ export class NexusMods {
 
     private initSavingFile() {
         const fullPath = path.join(this.savingFilePath, this.fileName);
+
+        // Check if directory exists, if not, create it
+        const dir = path.dirname(fullPath);
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });  // Create directories recursively
+        }
+
         // If the file doesn't exist, create it with an empty JSON object.
         if (!fs.existsSync(fullPath)) {
             fs.writeFileSync(fullPath, JSON.stringify({}));
@@ -27,7 +35,7 @@ export class NexusMods {
      * @param {string} key
      * @param {string} value
      * @return {*}  {Promise<void>}
-     * @memberof NexusMods
+     * @memberof NexusSaver
      */
     public async save(key: string, value: string): Promise<void> {
         const fullPath = path.join(this.savingFilePath, this.fileName);
@@ -48,7 +56,7 @@ export class NexusMods {
      *
      * @param {string} key
      * @return {*}  {Promise<string>}
-     * @memberof NexusMods
+     * @memberof NexusSaver
      */
     public async load(key: string): Promise<string> {
         const fullPath = path.join(this.savingFilePath, this.fileName);
@@ -66,7 +74,7 @@ export class NexusMods {
      * 
      * @param {string} key
      * @return {*}  {Promise<boolean>}
-     * @memberof NexusMods
+     * @memberof NexusSaver
      */
     public async delete(key: string): Promise<boolean> {
         const fullPath = path.join(this.savingFilePath, this.fileName);
