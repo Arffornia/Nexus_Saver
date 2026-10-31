@@ -1,63 +1,54 @@
 # Nexus Saver
 
-This package lets you manage variables that you want to save and load.
+`@arffornia/nexus_saver` stores key/value settings in a JSON file on disk (`save`, `load`, `delete`).
+It is part of the Arffornia ecosystem: the [Arffornia launcher](https://github.com/Arffornia/Arffornia_Launcher_V.5.2)
+uses it for player settings (language, RAM) and the Microsoft session. Architecture docs (coming soon):
+https://arffornia.github.io/docs/
 
-## Install : 
+## Requirements
 
-To include Nexus Saver in your project, you can install it using npm :
+- Node.js 22 (CI runs on 22)
+
+## Install
+
 ```bash
 npm i @arffornia/nexus_saver
 ```
 
-## Usage : 
+## Usage
 
-#### Init 
-At the beginning, you must initialize an instance of NexusSaver with the path of the save file :
+```ts
+import { NexusSaver } from '@arffornia/nexus_saver';
 
-```typescript
-const saver = new NexusSaver(savedFilePath);
+// Directory of the save file, and optional file name (default: launcherOptions.json).
+// The directory and an empty `{}` file are created if missing.
+const saver = new NexusSaver('./.myapp', 'settings.json');
+
+await saver.save('lang', 'en');        // add or overwrite a key
+const lang = await saver.load('lang'); // value, or '' if the key does not exist
+await saver.delete('lang');            // true if the key existed, false otherwise
 ```
 
-#### Save a variable : 
-You can easily save a variable like this : 
+Values are stored as plain JSON (pretty-printed). Do not store secrets without encrypting them first.
 
-```typescript
-saver.save("key", "value");
-```
+## Commands
 
-Nb: If you set a variable that already exists, it will simply overwrite it.
+| Command | What it does |
+|---|---|
+| `npm ci` | Install the exact dependency tree from `package-lock.json` |
+| `make check` | Type-check, run the tests, build (what CI runs) |
+| `make test` / `npm test` | Run the Jest tests |
+| `make build` / `npm run build` | Compile to `dist/` (`tsc` + `tsc-alias`) |
 
-#### Load a variable :
-You can easily load a variable like this :
+## Configuration
 
-```typescript 
-saver.load("key");
-```
+None. The directory and file name are constructor arguments. No environment variables are read.
 
-Nb: If the key doesn't exist, it will return an empty string.
+## Release process
 
-#### Delete a variable :
-You can easily delete a variable using its key with :
-
-```typescript
-saver.delete("key");
-```
-
-Nb: If you try to delete a key that doesn't exist, nothing will happen.
-
-## Tests
-
-Tests are managed by **Jest** 
-
-You can run the tests using :
-
-```bash
-npm test
-```
+Releases are done by the maintainer: bump `version` in `package.json` in a PR, merge, then publish the merged
+commit to npm and tag it `v<version>`. Contributors never publish.
 
 ## License
 
-This project is licensed under the MIT licence. You can consult the complete text of the licence in the file [LICENSE](LICENSE).
-
-
-
+MIT, see [LICENSE](LICENSE).
