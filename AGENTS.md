@@ -44,14 +44,14 @@ make build      # tsc && tsc-alias -> dist/
 
 ## Testing strategy
 
-- Use a temp dir (`fs.mkdtempSync(path.join(os.tmpdir(), ...))`) and clean it up; never write into the repo.
+- Use `makeTmpDir()` / `removeDir()` from `tests/helpers.ts`; never write into the repo (`.minecraft/` is ignored).
+- Test files must end in `.test.ts` or Jest will not run them.
 - Always `await` `save`/`delete` in tests.
 
 ## Gotchas (from the 2026-10-29 audit)
 
 - Writes rewrite the file in place (no temp file + rename), so a crash mid-write corrupts every setting.
 - `load` returns `data[key] || ''`, so `0` and `false` read back as `''`.
-- `tests/read&write.test copy.ts` never runs (wrong suffix) and tests write into `./.minecraft/`, which is committed.
 - The API is `async` but uses synchronous I/O.
 - Values are plaintext; encryption of the token is a launcher concern (Electron `safeStorage`).
 
