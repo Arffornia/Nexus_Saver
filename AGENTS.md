@@ -39,7 +39,8 @@ make build      # tsc && tsc-alias -> dist/
 ## Hard rules
 
 - Never replace this library (or Nexus_Java / Nexus_Logger / Nexus_Mods) with a third-party one. Improve it.
-- Never commit secrets. Never merge, tag, publish or push to `main`.
+- Never commit secrets.
+- Agents may merge their own PRs (squash) after CI is green and an agent review found no blocking issue. Agents never tag, release, push to main directly, or change production.
 - Behaviour changes need an issue.
 
 ## Testing strategy
