@@ -32,8 +32,8 @@ make build      # tsc && tsc-alias -> dist/
 
 - English everywhere (code, comments, docs, commits, PRs).
 - Conventional Commits; one PR per issue; PR body: What / Why / How it was tested / Risk & revert.
-- Keep the public API backward compatible: constructor `(dir, fileName?)`, `save(key, value)`, `load(key)`
-  (returns `''` for a missing key), `delete(key)` (returns a boolean). All are `async`.
+- Keep the public API backward compatible: constructor `(dir, fileName?)`, `save<T = string>(key, value)`,
+  `load<T = string>(key)` (returns `''` for a missing key), `delete(key)` (returns a boolean). All are `async`.
 - Do not bump `version` or publish: the maintainer releases.
 
 ## Hard rules
@@ -50,8 +50,10 @@ make build      # tsc && tsc-alias -> dist/
 
 ## Gotchas (from the 2026-10-29 audit)
 
-- Writes rewrite the file in place (no temp file + rename), so a crash mid-write corrupts every setting.
-- `load` returns `data[key] || ''`, so `0` and `false` read back as `''`.
+- Every write must go through `writeFileAtomic()` (temp file in the same dir, fsync, rename). Never
+  `writeFileSync` the target path directly: a crash mid-write would wipe every setting and log the player out.
+- `load` returns the stored value as is (`0`, `false`, `null` included) and `''` only for a missing key;
+  keep the `hasOwnProperty` check (no prototype keys).
 - The API is `async` but uses synchronous I/O.
 - Values are plaintext; encryption of the token is a launcher concern (Electron `safeStorage`).
 

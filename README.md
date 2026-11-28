@@ -29,7 +29,12 @@ const lang = await saver.load('lang'); // value, or '' if the key does not exist
 await saver.delete('lang');            // true if the key existed, false otherwise
 ```
 
-Values are stored as plain JSON (pretty-printed). Do not store secrets without encrypting them first.
+Values can be any JSON-serialisable value; `load` returns them as stored (`0` and `false` included) and `''` only
+when the key does not exist. TypeScript: `saver.load<number>('allocatedRam')`.
+
+Every write goes to a temporary file in the same directory, is flushed to disk, then renamed over the settings
+file, so a crash never leaves a half-written file. Values are stored as plain JSON (pretty-printed): do not store
+secrets without encrypting them first.
 
 ## Commands
 
